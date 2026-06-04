@@ -42,7 +42,7 @@ export default function About() {
     <section
       id="about"
       data-theme="light"
-      className="bg-cream min-h-screen px-[5vw] py-20"
+      className="bg-cream min-h-screen px-[5vw] pt-20 pb-0 flex flex-col"
     >
       {/* Titre */}
       <h2 className="font-display text-black tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)] mb-14">
@@ -179,6 +179,28 @@ export default function About() {
 
         </div>
       </div>
+
+      {/* ── Bandeau défilant ──────────────────────────────────────────── */}
+      <div className="mt-auto -mx-[5vw] overflow-hidden border-t border-black/8 py-3">
+        <div
+          className="flex items-center w-max"
+          style={{ animation: 'marquee 22s linear infinite' }}
+        >
+          {[0, 1].map(copy => (
+            <span key={copy} className="flex items-center font-sans font-light text-[clamp(0.7rem,1.1vw,1rem)] text-black/45 whitespace-nowrap">
+              <span>scroll pour voir les magnifiques projets</span>
+              <span className="mx-6 text-yellow/70 text-[0.6em]">✦</span>
+              <span>tu vas vouloir travailler avec moi&nbsp;!</span>
+              <span className="mx-6 text-yellow/70 text-[0.6em]">✦</span>
+              <span>merci de l&apos;intérêt que tu portes à mon travail</span>
+              <span className="mx-6 text-yellow/70 text-[0.6em]">✦</span>
+              <span>le développement c&apos;est génial&nbsp;!</span>
+              <span className="mx-6 text-yellow/70 text-[0.6em]">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
     </section>
   )
 }
