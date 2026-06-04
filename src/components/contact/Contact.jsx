@@ -5,10 +5,10 @@ import gsap from 'gsap'
 const ORBIT_SPEED = 1 / 22
 
 const ICONS = [
-  { icon: 'simple-icons:linkedin', label: 'LinkedIn', href: '#' },
-  { icon: 'simple-icons:github',   label: 'GitHub',   href: '#' },
-  { icon: 'simple-icons:gmail',    label: 'Gmail',    href: '#' },
-  { icon: 'ph:file-pdf',           label: 'CV',       href: '#' },
+  { icon: 'simple-icons:linkedin', label: 'LinkedIn', href: 'https://linkedin.com/in/ainy-ourzik' },
+  { icon: 'simple-icons:github',   label: 'GitHub',   href: 'https://github.com/aourzik/' },
+  { icon: 'simple-icons:gmail',    label: 'Gmail',    href: 'mailto:a.ourzik.dev@gmail.com' },
+  { icon: 'ph:file-pdf',           label: 'CV',       href: '/assets/Ainy_Ourzik_CV.pdf' },
 ]
 
 // Ovale : assez grand pour ne jamais frôler le texte central
@@ -111,7 +111,7 @@ export default function Contact() {
             <a
               href={item.href}
               title={item.label}
-              target={item.href !== '#' ? '_blank' : undefined}
+              target="_blank"
               rel="noreferrer"
               onMouseEnter={onEnter}
               onMouseLeave={onLeave}
