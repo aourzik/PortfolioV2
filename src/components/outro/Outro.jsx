@@ -216,7 +216,7 @@ export default function Outro() {
         {/* ── Icônes 2×2 — bas droite ─────────────────────────────────── */}
         <div
           ref={iconsRef}
-          className="absolute bottom-[7vh] right-[6vw] z-20 grid grid-cols-2 gap-5 pointer-events-auto"
+          className="absolute top-[7vh] right-[6vw] z-20 grid grid-cols-2 gap-5 pointer-events-auto"
           style={{ opacity: 0 }}
         >
           {[

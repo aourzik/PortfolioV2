@@ -89,9 +89,19 @@ export default function Navbar() {
       }))
     })
 
+    // Devient discrète dans l'Outro
+    const stOutro = ScrollTrigger.create({
+      trigger: '#outro',
+      start:   'top 80px',
+      end:     'bottom bottom',
+      onEnter:     () => gsap.to(el, { opacity: 0.25, scale: 0.82, duration: 0.6, ease: 'power2.out' }),
+      onLeaveBack: () => gsap.to(el, { opacity: 1,    scale: 1,    duration: 0.5, ease: 'power2.out' }),
+    })
+
     return () => {
       stAppear.kill()
       stLight.forEach(st => st.kill())
+      stOutro.kill()
     }
   }, [])
 
