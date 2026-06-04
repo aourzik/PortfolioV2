@@ -4,10 +4,9 @@ import TechMarquee from './components/marquee/TechMarquee'
 import Navbar      from './components/navbar/Navbar'
 import About       from './components/about/About'
 import Projects    from './components/projects/Projects'
+import Contact     from './components/contact/Contact'
 
-const PLACEHOLDERS = [
-  { id: 'contact', label: 'Contact' },
-]
+const PLACEHOLDERS = []
 
 export default function App() {
   return (
@@ -19,6 +18,7 @@ export default function App() {
         <TechMarquee />
         <About />
         <Projects />
+        <Contact />
 
         {PLACEHOLDERS.map(({ id, label }) => (
           <section
