@@ -181,7 +181,7 @@ export default function Outro() {
                 rotateX      : tilt arrière mesuré depuis la trapèze (bas +large → top recule)
                 rotateY      : quasi-nul, l'écran est presque face caméra
               */
-              transform:       'translateX(-270px) translateY(-100px) scale(0.54) rotateX(-10deg) rotateY(10deg) rotateZ(-2.5deg)',
+              transform:       'translateX(-260px) translateY(-100px) scale(0.54) rotateX(-10deg) rotateY(10deg) rotateZ(-2.5deg)',
               transformOrigin: '50% 50%',
             }}
           >
