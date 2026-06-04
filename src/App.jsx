@@ -3,10 +3,10 @@ import Hero        from './components/hero/Hero'
 import TechMarquee from './components/marquee/TechMarquee'
 import Navbar      from './components/navbar/Navbar'
 import About       from './components/about/About'
+import Projects    from './components/projects/Projects'
 
 const PLACEHOLDERS = [
-  { id: 'projects', label: 'Projects' },
-  { id: 'contact',  label: 'Contact' },
+  { id: 'contact', label: 'Contact' },
 ]
 
 export default function App() {
@@ -18,6 +18,7 @@ export default function App() {
         <Hero />
         <TechMarquee />
         <About />
+        <Projects />
 
         {PLACEHOLDERS.map(({ id, label }) => (
           <section
