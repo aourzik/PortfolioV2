@@ -16,6 +16,7 @@ export function useLenis() {
     })
 
     lenisRef.current = lenis
+    window.__lenis = lenis  // accessible globalement pour scrollTo
 
     // ScrollTrigger doit recevoir les positions scroll de Lenis
     lenis.on('scroll', ScrollTrigger.update)
@@ -28,6 +29,7 @@ export function useLenis() {
       lenis.off('scroll', ScrollTrigger.update)
       gsap.ticker.remove(tick)
       lenis.destroy()
+      window.__lenis = null
     }
   }, [])
 

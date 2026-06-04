@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
+const SHADOW_ON  = 'inset 0 -0.32em 0 rgba(255, 183, 3, 0.32)'
+const SHADOW_OFF = 'inset 0 0em 0 rgba(255, 183, 3, 0)'
+
 export default function CustomCursor() {
   const cursorRef = useRef(null)
 
@@ -20,28 +23,33 @@ export default function CustomCursor() {
     }
 
     const onEnter = (e) => {
-      if (e.target.closest('a, button, [data-hover]')) {
-        gsap.to(el, {
-          scale: 2.5,
-          backgroundColor: 'var(--cursor-color)',
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-      }
+      const target = e.target.closest('a, button, [data-hover]')
+      if (!target) return
+
+      // Cursor : léger scale du ring, sans fill
+      gsap.to(el, { scale: 1.6, duration: 0.3, ease: 'power2.out', overwrite: 'auto' })
+
+      // Surligneur : GSAP anime le boxShadow directement (évite conflits CSS)
+      gsap.to(target, {
+        boxShadow: SHADOW_ON,
+        duration: 0.22,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
     }
 
     const onLeave = (e) => {
       const target = e.target.closest('a, button, [data-hover]')
-      if (target && !target.contains(e.relatedTarget)) {
-        gsap.to(el, {
-          scale: 1,
-          backgroundColor: 'transparent',
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-      }
+      if (!target || target.contains(e.relatedTarget)) return
+
+      gsap.to(el, { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: 'auto' })
+
+      gsap.to(target, {
+        boxShadow: SHADOW_OFF,
+        duration: 0.22,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
     }
 
     window.addEventListener('mousemove', onMove)
@@ -59,7 +67,7 @@ export default function CustomCursor() {
     <div
       ref={cursorRef}
       className="custom-cursor fixed top-0 left-0 size-6 rounded-full pointer-events-none z-[9999]"
-      style={{ borderColor: 'var(--cursor-color)', border: '1.5px solid var(--cursor-color)' }}
+      style={{ border: '1.5px solid var(--cursor-color)' }}
     />
   )
 }

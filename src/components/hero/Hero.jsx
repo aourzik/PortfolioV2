@@ -169,32 +169,46 @@ export default function Hero() {
           </div>
         )}
 
-        {/* ── Typographie ─────────────────────────────────────────────── */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-end px-[3.5vw] pb-[4vh] pointer-events-none select-none">
+        {/* ── Typographie — centrée ───────────────────────────────────── */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none select-none">
           <h1
             ref={titleRef}
-            className="font-display tracking-[-0.03em] leading-[0.85]"
+            className="font-display tracking-[-0.03em] leading-[0.85] text-center"
           >
-            {/*
-              A et O en uppercase, reste en lowercase.
-              Fascinate distingue visuellement les formes
-              majuscules (ornées) des minuscules.
-            */}
             <span data-line="0" className="block text-cream text-[10vw]">
               Aïny Ourzik
             </span>
-            <span data-line="1" className="block text-yellow text-[10vw]">
+            {/* Tagline plus petite, légèrement espacée du nom */}
+            <span data-line="1" className="block text-yellow text-[5vw] mt-[1vw]">
               l'ergonomie
             </span>
-            <span data-line="2" className="block text-cream text-[10vw]">
+            <span data-line="2" className="block text-cream text-[5vw]">
               du développement
             </span>
           </h1>
+        </div>
 
-          {/* Scroll hint */}
-          <p className="mt-[2.5vh] font-sans text-cream/25 text-[11px] tracking-[0.35em] uppercase">
+        {/* ── Scroll indicator animé — bas de l'écran centré ─────────── */}
+        <div className="absolute bottom-[5vh] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 pointer-events-none select-none">
+          <span className="font-sans font-medium text-cream/50 text-[10px] tracking-[0.45em] uppercase">
             scroll
-          </p>
+          </span>
+
+          {/* Capsule avec dot qui descend */}
+          <div className="w-[18px] h-[30px] rounded-full border border-cream/35 flex items-start justify-center pt-[5px]">
+            <div
+              className="w-[5px] h-[6px] rounded-full bg-yellow"
+              style={{ animation: 'scroll-dot 1.8s ease-in-out infinite' }}
+            />
+          </div>
+
+          {/* Ligne qui pulse vers le bas */}
+          <div className="w-px h-8 bg-cream/15 overflow-hidden relative">
+            <div
+              className="absolute inset-x-0 top-0 h-full bg-yellow/60"
+              style={{ animation: 'scroll-line 1.8s ease-in-out infinite 0.3s' }}
+            />
+          </div>
         </div>
 
       </div>
