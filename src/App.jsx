@@ -5,6 +5,7 @@ import Navbar      from './components/navbar/Navbar'
 import About       from './components/about/About'
 import Projects    from './components/projects/Projects'
 import Contact     from './components/contact/Contact'
+import Outro       from './components/outro/Outro'
 
 const PLACEHOLDERS = []
 
@@ -19,6 +20,7 @@ export default function App() {
         <About />
         <Projects />
         <Contact />
+        <Outro />
 
         {PLACEHOLDERS.map(({ id, label }) => (
           <section
@@ -33,9 +35,6 @@ export default function App() {
         ))}
       </main>
 
-      <footer className="flex items-center justify-between px-8 py-6">
-        {/* Footer — à implémenter */}
-      </footer>
     </Layout>
   )
 }
