@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Icon } from '@iconify/react'
 import gsap from 'gsap'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -19,6 +20,7 @@ export default function Outro() {
   const sectionRef = useRef(null)
   const canvasRef  = useRef(null)
   const titleRef   = useRef(null)
+  const iconsRef   = useRef(null)
   const imagesRef  = useRef([])
   const frameRef   = useRef(FRAME_COUNT - 1)
   const [loaded, setLoaded] = useState(false)
@@ -53,6 +55,7 @@ export default function Outro() {
     const ctx    = canvas.getContext('2d')
     const imgs   = imagesRef.current
     const titleEl = titleRef.current
+    const iconsEl = iconsRef.current
 
     function draw(index) {
       const img = imgs[Math.max(0, Math.min(index, FRAME_COUNT - 1))]
@@ -108,11 +111,10 @@ export default function Outro() {
         )
       }
 
-      // ── Texte : fondu uniquement sur les dernières frames ─────────────
-      if (titleEl) {
-        const op = Math.max(0, 1 - index / TEXT_FADE_FRAMES)
-        titleEl.style.opacity = String(op)
-      }
+      // ── Texte + icônes : fondu sur les dernières frames ───────────────
+      const op = Math.max(0, 1 - index / TEXT_FADE_FRAMES)
+      if (titleEl) titleEl.style.opacity = String(op)
+      if (iconsEl) iconsEl.style.opacity = String(op)
     }
 
     function resize() {
@@ -209,6 +211,43 @@ export default function Outro() {
               du développement
             </span>
           </h1>
+        </div>
+
+        {/* ── Icônes 2×2 — bas droite ─────────────────────────────────── */}
+        <div
+          ref={iconsRef}
+          className="absolute bottom-[7vh] right-[6vw] z-20 grid grid-cols-2 gap-5 pointer-events-auto"
+          style={{ opacity: 0 }}
+        >
+          {[
+            { icon: 'simple-icons:linkedin', label: 'LinkedIn', href: 'https://linkedin.com/in/ainy-ourzik' },
+            { icon: 'simple-icons:github',   label: 'GitHub',   href: 'https://github.com/aourzik/' },
+            { icon: 'simple-icons:gmail',    label: 'Gmail',    href: 'mailto:a.ourzik.dev@gmail.com' },
+            { icon: 'ph:file-pdf',           label: 'CV',       href: '/assets/Ainy_Ourzik_CV.pdf' },
+          ].map(item => (
+            <a
+              key={item.label}
+              href={item.href}
+              title={item.label}
+              target="_blank"
+              rel="noreferrer"
+              className="
+                group flex items-center justify-center
+                w-24 h-24 rounded-full
+                bg-[#FFB703]/10 border-2 border-[#FFB703]/40
+                hover:bg-[#FFB703]/20 hover:border-[#FFB703]
+                transition-all duration-300 hover:scale-110
+              "
+              style={{ boxShadow: '0 0 24px rgba(255,183,3,0.15)' }}
+            >
+              <Icon
+                icon={item.icon}
+                width={38}
+                height={38}
+                className="text-[#FFB703] transition-colors duration-300"
+              />
+            </a>
+          ))}
         </div>
 
       </div>
