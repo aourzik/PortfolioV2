@@ -1,5 +1,10 @@
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Polaroid   from './Polaroid'
 import ToulouseMap from './ToulouseMap'
+
+gsap.registerPlugin(ScrollTrigger)
 
 // ── Card wrapper avec hover lift + yellow glow ──────────────────────────────
 function Card({ children, className = '', style = {}, glowColor = 'rgba(255,183,3,0.07)' }) {
@@ -38,6 +43,18 @@ function CardLabel({ children }) {
 }
 
 export default function About() {
+  const titleRef = useRef(null)
+
+  useEffect(() => {
+    const el = titleRef.current
+    if (!el) return
+    gsap.fromTo(el,
+      { y: 60, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 80%' } }
+    )
+  }, [])
+
   return (
     <section
       id="about"
@@ -45,7 +62,11 @@ export default function About() {
       className="bg-cream min-h-screen px-[5vw] pt-20 pb-0 flex flex-col"
     >
       {/* Titre */}
-      <h2 className="font-display text-black tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)] mb-14">
+      <h2
+        ref={titleRef}
+        className="font-display text-black tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)] mb-14"
+        style={{ opacity: 0 }}
+      >
         À propos de moi
       </h2>
 

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '@iconify/react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const ORBIT_SPEED = 1 / 22
 
@@ -17,6 +20,7 @@ function getRy() { return Math.min(window.innerHeight * 0.30, 260) }
 
 export default function Contact() {
   const iconRefs   = useRef([])
+  const textRef    = useRef(null)
   const isPaused   = useRef(false)
   const pauseStart = useRef(0)
   const timeOffset = useRef(0)
@@ -35,6 +39,17 @@ export default function Contact() {
       isPaused.current = false
     }
   }
+
+  useEffect(() => {
+    const el = textRef.current
+    if (el) {
+      gsap.fromTo(el,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 80%' } }
+      )
+    }
+  }, [])
 
   useEffect(() => {
     const onResize = () => setRing({ w: getRx() * 2, h: getRy() * 2 })
@@ -136,7 +151,7 @@ export default function Contact() {
       </div>
 
       {/* ── Phrase centrale ─────────────────────────────────────────── */}
-      <div className="relative z-10 text-center px-[6vw] max-w-5xl">
+      <div ref={textRef} className="relative z-10 text-center px-[6vw] max-w-5xl" style={{ opacity: 0 }}>
         <p
           className="font-sans font-extrabold italic text-black leading-[0.88]"
           style={{

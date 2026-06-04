@@ -1,4 +1,8 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 // ── Données projets ──────────────────────────────────────────────────────────
 const PROJECTS = [
@@ -118,19 +122,33 @@ function ProjectCard({ src, name, description, type, wide }) {
 // ── Section principale ───────────────────────────────────────────────────────
 export default function Projects() {
   const trackRef  = useRef(null)
-  // Dupliquer pour la boucle infinie
+  const titleRef  = useRef(null)
   const items = [...PROJECTS, ...PROJECTS]
+
+  useEffect(() => {
+    const lines = titleRef.current?.querySelectorAll('[data-line]')
+    if (!lines?.length) return
+    gsap.fromTo(lines,
+      { y: 70, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.14,
+        scrollTrigger: { trigger: titleRef.current, start: 'top 80%' } }
+    )
+  }, [])
 
   return (
     <section id="projects" className="bg-[#0a0a0a] py-24 overflow-hidden">
 
       {/* Titre */}
       <div className="px-[5vw] mb-70">
-        <h2 className="font-display text-cream tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)]">
-          <span className="block">Tous les</span>
+        <h2
+          ref={titleRef}
+          className="font-display text-cream tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)]"
+        >
+          <span data-line className="block" style={{ opacity: 0 }}>Tous les</span>
           <span
+            data-line
             className="block font-sans font-extrabold italic text-yellow"
-            style={{ letterSpacing: '-0.05em' }}
+            style={{ letterSpacing: '-0.05em', opacity: 0 }}
           >
             projets
           </span>
