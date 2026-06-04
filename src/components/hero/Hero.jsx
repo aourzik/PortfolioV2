@@ -175,14 +175,22 @@ export default function Hero() {
             ref={titleRef}
             className="font-display tracking-[-0.03em] leading-[0.85] text-center"
           >
-            <span data-line="0" className="block text-cream text-[10vw]">
+            <span data-line="0" className="block text-[10vw]" style={{
+              letterSpacing: '-0.04em',
+              color: 'transparent',
+              WebkitTextStroke: '2px #FFFAE8',
+            }}>
               Aïny Ourzik
             </span>
-            {/* Tagline plus petite, légèrement espacée du nom */}
-            <span data-line="1" className="block text-yellow text-[5vw] mt-[1vw]">
+            {/* l'ergonomie — Jakarta italic bold, lettres très serrées */}
+            <span
+              data-line="1"
+              className="block text-yellow text-[7vw] mt-[1vw] font-sans font-extrabold italic"
+              style={{ letterSpacing: '-0.06em' }}
+            >
               l'ergonomie
             </span>
-            <span data-line="2" className="block text-cream text-[5vw]">
+            <span data-line="2" className="block text-cream text-[5vw] font-sans font-light" style={{ letterSpacing: '-0.03em' }}>
               du développement
             </span>
           </h1>

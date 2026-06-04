@@ -83,7 +83,7 @@ export default function About() {
                 le moindre détail pour simplifier la vie des utilisateurs.
                 En reconversion via la{' '}
                 {/* Holberton School en Fascinate jaune */}
-                <span className="font-display text-yellow" style={{ fontSize: '1rem' }}>
+                <span className="font-display text-yellow" style={{ fontSize: '1.45rem' }}>
                   Holberton School
                 </span>
                 , je transforme cette expertise en code propre et interfaces vivantes.
