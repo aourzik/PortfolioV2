@@ -15,14 +15,15 @@ const SCREEN_CENTER = { x: 0.365, y: 0.38 }
 const getFrameUrl = (i) =>
   `/assets/hero-3d/gemini_peux_tu_me_générer_une_${String(i).padStart(3, '0')}.png`
 
-// Frames sur lesquelles le texte apparaît (fondu) — les 14 dernières
-const TEXT_FADE_FRAMES = 2
+const TEXT_FADE_FRAMES   = 2
+const FOOTER_FADE_FRAMES = 20
 
 export default function Outro() {
   const sectionRef      = useRef(null)
   const canvasRef       = useRef(null)
   const titleRef        = useRef(null)
   const iconsRef        = useRef(null)
+  const footerRef       = useRef(null)
   const perspectiveRef  = useRef(null)
   const imagesRef       = useRef([])
   const frameRef        = useRef(FRAME_COUNT - 1)
@@ -57,8 +58,9 @@ export default function Outro() {
     const canvas = canvasRef.current
     const ctx    = canvas.getContext('2d')
     const imgs   = imagesRef.current
-    const titleEl = titleRef.current
-    const iconsEl = iconsRef.current
+    const titleEl  = titleRef.current
+    const iconsEl  = iconsRef.current
+    const footerEl = footerRef.current
 
     function draw(index) {
       const img = imgs[Math.max(0, Math.min(index, FRAME_COUNT - 1))]
@@ -114,10 +116,14 @@ export default function Outro() {
         )
       }
 
-      // ── Texte + icônes : fondu sur les dernières frames ───────────────
+      // ── Texte + icônes : fondu sur les 2 dernières frames ────────────
       const op = Math.max(0, 1 - index / TEXT_FADE_FRAMES)
       if (titleEl) titleEl.style.opacity = String(op)
       if (iconsEl) iconsEl.style.opacity = String(op)
+
+      // ── Footer gradient : apparaît sur les 20 dernières frames ───────
+      const footerOp = Math.max(0, 1 - index / FOOTER_FADE_FRAMES)
+      if (footerEl) footerEl.style.opacity = String(footerOp)
     }
 
     function resize() {
@@ -276,6 +282,20 @@ export default function Outro() {
               />
             </a>
           ))}
+        </div>
+
+        {/* ── Footer gradient + copyright ──────────────────────────────── */}
+        <div
+          ref={footerRef}
+          className="absolute inset-x-0 bottom-0 z-[15] h-[30vh] flex flex-col justify-end pointer-events-none select-none"
+          style={{
+            opacity:    0,
+            background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.97) 40%, rgba(0,0,0,0.5) 70%, transparent 100%)',
+          }}
+        >
+          <p className="text-center text-cream/30 text-[10px] tracking-[0.35em] uppercase font-sans font-light pb-7">
+            Conçu &amp; développé par Aïny Ourzik · 2026
+          </p>
         </div>
 
       </div>
