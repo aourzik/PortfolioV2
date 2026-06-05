@@ -130,6 +130,8 @@ export default function Contact() {
               rel="noreferrer"
               onMouseEnter={onEnter}
               onMouseLeave={onLeave}
+              onTouchStart={onEnter}
+              onTouchEnd={onLeave}
               className="
                 group flex items-center justify-center
                 w-20 h-20 rounded-full

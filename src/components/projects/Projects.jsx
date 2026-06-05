@@ -139,7 +139,7 @@ export default function Projects() {
     <section id="projects" className="bg-[#0a0a0a] py-24 overflow-hidden">
 
       {/* Titre */}
-      <div className="px-[5vw] mb-70">
+      <div className="px-[5vw] mb-12 sm:mb-24 lg:mb-[280px]">
         <h2
           ref={titleRef}
           className="font-display text-cream tracking-[-0.03em] leading-[0.85] text-[clamp(2.5rem,6vw,6rem)]"
@@ -163,6 +163,8 @@ export default function Projects() {
         }}
         onMouseEnter={() => { if (trackRef.current) trackRef.current.style.animationPlayState = 'paused' }}
         onMouseLeave={() => { if (trackRef.current) trackRef.current.style.animationPlayState = 'running' }}
+        onTouchStart={() => { if (trackRef.current) trackRef.current.style.animationPlayState = 'paused' }}
+        onTouchEnd={() => { if (trackRef.current) trackRef.current.style.animationPlayState = 'running' }}
       >
         <div
           ref={trackRef}

@@ -52,8 +52,11 @@ export default function Polaroid({ src, alt, label }) {
       {/* Cadre Polaroid */}
       <div className="bg-white" style={{ padding: '16px 16px 75px 16px' }}>
 
-        {/* Photo — agrandie */}
-        <div className="relative overflow-hidden" style={{ width: 380, height: 450 }}>
+        {/* Photo — responsive : 380px max, 75vw sur petit écran */}
+        <div
+          className="relative overflow-hidden"
+          style={{ width: 'min(380px, 75vw)', height: 'min(450px, 89vw)' }}
+        >
           <img
             src={src}
             alt={alt}
@@ -62,7 +65,7 @@ export default function Polaroid({ src, alt, label }) {
         </div>
 
         {/* Label manuscrit */}
-        <div className="pt-4 pb-1 text-center" style={{ width: 380 }}>
+        <div className="pt-4 pb-1 text-center" style={{ width: 'min(380px, 75vw)' }}>
           <span
             className="font-handwriting text-gray-400"
             style={{ fontSize: '1.5rem', letterSpacing: '0.02em' }}
