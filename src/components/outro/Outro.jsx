@@ -5,10 +5,12 @@ import gsap from 'gsap'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const FRAME_COUNT = 60
-const ZOOM_TARGET = { x: 0.50, y: 0.36 }
-const ZOOM_START  = 0.45
-const ZOOM_MAX    = 3.8
+const FRAME_COUNT   = 60
+const ZOOM_TARGET   = { x: 0.50, y: 0.36 }
+const ZOOM_START    = 0.45
+const ZOOM_MAX      = 3.8
+// Centre de l'écran MacBook dans l'image source (mesuré : 634/1440, 346/900)
+const SCREEN_CENTER = { x: 0.365, y: 0.38 }
 
 const getFrameUrl = (i) =>
   `/assets/hero-3d/gemini_peux_tu_me_générer_une_${String(i).padStart(3, '0')}.png`
@@ -17,12 +19,13 @@ const getFrameUrl = (i) =>
 const TEXT_FADE_FRAMES = 2
 
 export default function Outro() {
-  const sectionRef = useRef(null)
-  const canvasRef  = useRef(null)
-  const titleRef   = useRef(null)
-  const iconsRef   = useRef(null)
-  const imagesRef  = useRef([])
-  const frameRef   = useRef(FRAME_COUNT - 1)
+  const sectionRef      = useRef(null)
+  const canvasRef       = useRef(null)
+  const titleRef        = useRef(null)
+  const iconsRef        = useRef(null)
+  const perspectiveRef  = useRef(null)
+  const imagesRef       = useRef([])
+  const frameRef        = useRef(FRAME_COUNT - 1)
   const [loaded, setLoaded] = useState(false)
 
   // ── Préchargement depuis cache navigateur ──────────────────────────────
@@ -121,6 +124,36 @@ export default function Outro() {
       const { width, height } = canvas.getBoundingClientRect()
       canvas.width  = Math.round(width)
       canvas.height = Math.round(height)
+
+      const firstImg = imgs[0]
+      if (firstImg?.naturalWidth && titleEl && perspectiveRef.current) {
+        const cw = canvas.width
+        const ch = canvas.height
+        const iw = firstImg.naturalWidth
+        const ih = firstImg.naturalHeight
+
+        // Reproduit le même "cover" que draw() au zoom 1 (frame 0)
+        const baseScale = Math.max(cw / iw, ch / ih)
+        const dw = iw * baseScale
+        const dh = ih * baseScale
+        const dx = (cw - dw) / 2
+        const dy = (ch - dh) / 2
+
+        // Pixel canvas du centre de l'écran MacBook
+        const screenCx = dx + SCREEN_CENTER.x * dw
+        const screenCy = dy + SCREEN_CENTER.y * dh
+
+        // Décalage depuis le centre du canvas (point de départ du h1 centré en flex)
+        const tx = screenCx - cw / 2
+        const ty = screenCy - ch / 2
+
+        titleEl.style.transform = `translateX(${tx}px) translateY(${ty}px) scale(0.54) rotateX(-10deg) rotateY(10deg) rotateZ(-2.5deg)`
+
+        // perspectiveOrigin : % du viewport pointant vers le centre de l'écran MacBook
+        perspectiveRef.current.style.perspectiveOrigin =
+          `${((screenCx / cw) * 100).toFixed(2)}% ${((screenCy / ch) * 100).toFixed(2)}%`
+      }
+
       draw(frameRef.current)
     }
 
@@ -167,20 +200,15 @@ export default function Outro() {
           x = 482 / 1440 = 33.5%   y = 346 / 900 = 38.4%
         */}
         <div
+          ref={perspectiveRef}
           className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none select-none"
-          style={{ perspective: '1000px', perspectiveOrigin: '33.5% 38.4%' }}
+          style={{ perspective: '1000px' }}
         >
           <h1
             ref={titleRef}
             className="font-display tracking-[-0.03em] leading-[0.85] text-center"
             style={{
               opacity:         0,
-              /*
-                translateX/Y : repositionne le h1 sur le centre de l'écran
-                scale        : réduit pour tenir dans l'écran (~634px wide)
-                rotateX      : tilt arrière mesuré depuis la trapèze (bas +large → top recule)
-                rotateY      : quasi-nul, l'écran est presque face caméra
-              */
               transform:       'translateX(-260px) translateY(-100px) scale(0.54) rotateX(-10deg) rotateY(10deg) rotateZ(-2.5deg)',
               transformOrigin: '50% 50%',
             }}
