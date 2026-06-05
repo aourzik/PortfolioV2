@@ -20,6 +20,7 @@ export default function Hero() {
   const titleRef     = useRef(null)
   const overlayRef   = useRef(null)
   const scrollIndRef = useRef(null)
+  const auroraRef    = useRef(null)
   const imagesRef    = useRef([])
   const frameRef     = useRef(0)
   const [loaded,   setLoaded]   = useState(false)
@@ -49,6 +50,8 @@ export default function Hero() {
     const canvas = canvasRef.current
     const ctx    = canvas.getContext('2d')
     const imgs   = imagesRef.current
+
+    const auroraEl = auroraRef.current
 
     const titleLines = titleRef.current
       ? Array.from(titleRef.current.querySelectorAll('[data-line]'))
@@ -116,6 +119,9 @@ export default function Hero() {
         line.style.transform = `translateX(${tx}vw)`
         line.style.opacity   = op
       })
+
+      // ── Aurora : disparaît sur les 20 premiers frames de scroll ──────
+      if (auroraEl) auroraEl.style.opacity = String(Math.max(0, 1 - index / 20))
     }
 
     function resize() {
@@ -188,6 +194,44 @@ export default function Hero() {
 
         {/* Canvas plein écran */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+        {/* ── Aurora — lumière ambiante animée ───────────────────────── */}
+        <div
+          ref={auroraRef}
+          className="absolute inset-0 z-[1] pointer-events-none overflow-hidden"
+          style={{ mixBlendMode: 'screen' }}
+        >
+          {/* Blob 1 — jaune chaud, haut-gauche */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 'min(75vw, 900px)', height: 'min(75vw, 900px)',
+              background: 'radial-gradient(circle, rgba(255,183,3,0.38) 0%, rgba(255,183,3,0.12) 40%, transparent 70%)',
+              top: '-25%', left: '-15%',
+              animation: 'aurora-drift-1 14s ease-in-out infinite',
+            }}
+          />
+          {/* Blob 2 — ambre, bas-droite */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 'min(60vw, 750px)', height: 'min(60vw, 750px)',
+              background: 'radial-gradient(circle, rgba(255,150,0,0.28) 0%, rgba(255,120,0,0.08) 45%, transparent 72%)',
+              bottom: '-30%', right: '-20%',
+              animation: 'aurora-drift-2 18s ease-in-out infinite',
+            }}
+          />
+          {/* Blob 3 — crème subtil, centre */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 'min(45vw, 550px)', height: 'min(45vw, 550px)',
+              background: 'radial-gradient(circle, rgba(255,250,232,0.12) 0%, transparent 65%)',
+              top: '25%', left: '30%',
+              animation: 'aurora-drift-3 22s ease-in-out infinite',
+            }}
+          />
+        </div>
 
         {/* Voile sombre permanent sur l'image */}
         <div className="absolute inset-0 z-[5] bg-black/25 pointer-events-none" />
