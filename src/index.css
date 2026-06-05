@@ -52,6 +52,11 @@
   --cursor-color: #FFB703;
 }
 
+::selection {
+  background-color: #FFE57A;
+  color: #0a0a0a;
+}
+
 html {
   background-color: #0a0a0a;
   color: #FFFAE8;
