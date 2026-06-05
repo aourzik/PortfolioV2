@@ -24,6 +24,7 @@ export default function Outro() {
   const titleRef        = useRef(null)
   const iconsRef        = useRef(null)
   const footerRef       = useRef(null)
+  const smokeRef        = useRef(null)
   const perspectiveRef  = useRef(null)
   const imagesRef       = useRef([])
   const frameRef        = useRef(FRAME_COUNT - 1)
@@ -61,6 +62,7 @@ export default function Outro() {
     const titleEl  = titleRef.current
     const iconsEl  = iconsRef.current
     const footerEl = footerRef.current
+    const smokeEl  = smokeRef.current
 
     function draw(index) {
       const img = imgs[Math.max(0, Math.min(index, FRAME_COUNT - 1))]
@@ -116,10 +118,11 @@ export default function Outro() {
         )
       }
 
-      // ── Texte + icônes : fondu sur les 2 dernières frames ────────────
+      // ── Texte + icônes + fumée : fondu sur les 2 dernières frames ────
       const op = Math.max(0, 1 - index / TEXT_FADE_FRAMES)
-      if (titleEl) titleEl.style.opacity = String(op)
+      if (titleEl) titleEl.style.opacity = String(op * 0.9)
       if (iconsEl) iconsEl.style.opacity = String(op)
+      if (smokeEl) smokeEl.style.opacity = String(op)
 
       // ── Footer gradient : apparaît sur les 20 dernières frames ───────
       const footerOp = Math.max(0, 1 - index / FOOTER_FADE_FRAMES)
@@ -192,6 +195,46 @@ export default function Outro() {
       <div className="sticky top-0 h-screen overflow-hidden">
 
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+        {/* ── Fumée — blobs crème floutés, apparaissent avec le titre ─── */}
+        <div
+          ref={smokeRef}
+          className="absolute inset-0 z-[8] pointer-events-none overflow-hidden"
+          style={{ opacity: 0, mixBlendMode: 'screen' }}
+        >
+          {/* Blob 1 — bas centre, monte vers la gauche */}
+          <div className="absolute rounded-full" style={{
+            width: 'min(55vw, 680px)', height: 'min(35vw, 420px)',
+            background: 'radial-gradient(ellipse, rgba(255,250,232,0.13) 0%, rgba(255,250,232,0.04) 50%, transparent 75%)',
+            filter: 'blur(28px)',
+            bottom: '8%', left: '5%',
+            animation: 'smoke-drift-1 16s ease-in-out infinite',
+          }} />
+          {/* Blob 2 — centre droit, dérive vers la gauche */}
+          <div className="absolute rounded-full" style={{
+            width: 'min(45vw, 560px)', height: 'min(28vw, 340px)',
+            background: 'radial-gradient(ellipse, rgba(255,250,232,0.10) 0%, rgba(255,250,232,0.03) 55%, transparent 78%)',
+            filter: 'blur(36px)',
+            top: '40%', right: '0%',
+            animation: 'smoke-drift-2 20s ease-in-out infinite',
+          }} />
+          {/* Blob 3 — haut gauche, très subtil */}
+          <div className="absolute rounded-full" style={{
+            width: 'min(35vw, 440px)', height: 'min(22vw, 270px)',
+            background: 'radial-gradient(ellipse, rgba(255,250,232,0.08) 0%, transparent 70%)',
+            filter: 'blur(24px)',
+            top: '15%', left: '20%',
+            animation: 'smoke-drift-3 24s ease-in-out infinite',
+          }} />
+          {/* Blob 4 — bas droit, mouvement lent */}
+          <div className="absolute rounded-full" style={{
+            width: 'min(40vw, 500px)', height: 'min(25vw, 300px)',
+            background: 'radial-gradient(ellipse, rgba(255,250,232,0.09) 0%, transparent 72%)',
+            filter: 'blur(32px)',
+            bottom: '20%', right: '10%',
+            animation: 'smoke-drift-4 18s ease-in-out infinite 3s',
+          }} />
+        </div>
 
         {/*
           Texte collé sur l'écran du MacBook (frame 0).
