@@ -12,15 +12,16 @@ const ZOOM_TARGET = { x: 0.50, y: 0.36 }
 const ZOOM_START  = 0.45
 const ZOOM_MAX    = 3.8
 
-// Direction d'exit par ligne : -1 = gauche, 1 = droite
 const LINE_DIRS = [-1, 1, -1]
 
 export default function Hero() {
-  const sectionRef  = useRef(null)
-  const canvasRef   = useRef(null)
-  const titleRef    = useRef(null)
-  const imagesRef   = useRef([])
-  const frameRef    = useRef(0)
+  const sectionRef   = useRef(null)
+  const canvasRef    = useRef(null)
+  const titleRef     = useRef(null)
+  const overlayRef   = useRef(null)
+  const scrollIndRef = useRef(null)
+  const imagesRef    = useRef([])
+  const frameRef     = useRef(0)
   const [loaded,   setLoaded]   = useState(false)
   const [progress, setProgress] = useState(0)
 
@@ -41,7 +42,7 @@ export default function Hero() {
     return () => imgs.forEach(img => { img.onload = img.onerror = null })
   }, [])
 
-  // ── Canvas + ScrollTrigger + animation titre ───────────────────────────
+  // ── Canvas + ScrollTrigger + animation entrée ──────────────────────────
   useEffect(() => {
     if (!loaded) return
 
@@ -49,7 +50,6 @@ export default function Hero() {
     const ctx    = canvas.getContext('2d')
     const imgs   = imagesRef.current
 
-    // Cache les lignes du titre pour l'animation (évite querySelectorAll dans le scroll)
     const titleLines = titleRef.current
       ? Array.from(titleRef.current.querySelectorAll('[data-line]'))
       : []
@@ -70,7 +70,7 @@ export default function Hero() {
 
       const prog   = index / (FRAME_COUNT - 1)
       const zRaw   = Math.max(0, (prog - ZOOM_START) / (1 - ZOOM_START))
-      const zEased = zRaw * zRaw * (3 - 2 * zRaw)           // smoothstep
+      const zEased = zRaw * zRaw * (3 - 2 * zRaw)
       const zFactor = 1 + zEased * (ZOOM_MAX - 1)
 
       const dw = baseDw * zFactor
@@ -87,7 +87,6 @@ export default function Hero() {
       ctx.fillRect(0, 0, cw, ch)
       ctx.drawImage(img, dx, dy, dw, dh)
 
-      // Masque dégradé radial (étoiles Gemini)
       const cornerX    = dx + dw
       const cornerY    = dy + dh
       const gradRadius = dw * 0.22
@@ -110,11 +109,10 @@ export default function Hero() {
       }
 
       // ── Animation exit du titre ──────────────────────────────────────
-      // Les lignes filent vers les côtés en même temps que le zoom démarre
       titleLines.forEach((line, i) => {
         const dir = LINE_DIRS[i] ?? (i % 2 === 0 ? -1 : 1)
-        const tx  = dir * zEased * 130            // vw
-        const op  = Math.max(0, 1 - zEased * 1.8) // disparaît avant la fin du zoom
+        const tx  = dir * zEased * 130
+        const op  = Math.max(0, 1 - zEased * 1.8)
         line.style.transform = `translateX(${tx}vw)`
         line.style.opacity   = op
       })
@@ -145,10 +143,41 @@ export default function Hero() {
       },
     })
 
+    // ── Animation d'entrée ──────────────────────────────────────────────
+    const tl = gsap.timeline()
+
+    // 1. Fondu du voile noir → révèle l'image
+    tl.to(overlayRef.current, {
+      opacity:  0,
+      duration: 1.4,
+      ease:     'power2.inOut',
+      onComplete() {
+        if (overlayRef.current) overlayRef.current.style.pointerEvents = 'none'
+      },
+    })
+
+    // 2. Lignes de texte : slide-up + fade in en stagger
+    tl.fromTo(
+      titleLines,
+      { opacity: 0, y: 45 },
+      { opacity: 1, y: 0, duration: 0.9, stagger: 0.2, ease: 'power3.out',
+        onComplete() { titleLines.forEach(el => { el.style.willChange = '' }) },
+      },
+      0.5,
+    )
+
+    // 3. Indicateur scroll : fade in en dernier
+    tl.fromTo(
+      scrollIndRef.current,
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
+      1.3,
+    )
+
     return () => {
+      tl.kill()
       st.kill()
       window.removeEventListener('resize', resize)
-      titleLines.forEach(el => { el.style.willChange = '' })
     }
   }, [loaded])
 
@@ -160,14 +189,20 @@ export default function Hero() {
         {/* Canvas plein écran */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-        {/* Loader */}
-        {!loaded && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black">
+        {/* Voile sombre permanent sur l'image */}
+        <div className="absolute inset-0 z-[5] bg-black/25 pointer-events-none" />
+
+        {/* Overlay noir : loader pendant le chargement, puis fond de l'animation d'entrée */}
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 z-20 bg-black flex items-center justify-center"
+        >
+          {!loaded && (
             <span className="font-sans text-cream/30 text-xs tracking-[0.3em] uppercase tabular-nums">
               {Math.round(progress * 100)}%
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* ── Typographie — centrée ───────────────────────────────────── */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none select-none">
@@ -176,33 +211,40 @@ export default function Hero() {
             className="font-display tracking-[-0.03em] leading-[0.85] text-center"
           >
             <span data-line="0" className="block text-[10vw]" style={{
-              letterSpacing: '-0.04em',
-              color: 'transparent',
+              opacity:          0,
+              letterSpacing:    '-0.04em',
+              color:            'transparent',
               WebkitTextStroke: '2px #FFFAE8',
             }}>
               Aïny Ourzik
             </span>
-            {/* l'ergonomie — Jakarta italic bold, lettres très serrées */}
             <span
               data-line="1"
               className="block text-yellow text-[7vw] mt-[1vw] font-sans font-extrabold italic"
-              style={{ letterSpacing: '-0.06em' }}
+              style={{ opacity: 0, letterSpacing: '-0.06em' }}
             >
               l'ergonomie
             </span>
-            <span data-line="2" className="block text-cream text-[5vw] font-sans font-light" style={{ letterSpacing: '-0.03em' }}>
+            <span
+              data-line="2"
+              className="block text-cream text-[5vw] font-sans font-light"
+              style={{ opacity: 0, letterSpacing: '-0.03em' }}
+            >
               du développement
             </span>
           </h1>
         </div>
 
-        {/* ── Scroll indicator animé — bas de l'écran centré ─────────── */}
-        <div className="absolute bottom-[5vh] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 pointer-events-none select-none">
+        {/* ── Scroll indicator ────────────────────────────────────────── */}
+        <div
+          ref={scrollIndRef}
+          className="absolute bottom-[5vh] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 pointer-events-none select-none"
+          style={{ opacity: 0 }}
+        >
           <span className="font-sans font-medium text-cream/50 text-[10px] tracking-[0.45em] uppercase">
             scroll
           </span>
 
-          {/* Capsule avec dot qui descend */}
           <div className="w-[18px] h-[30px] rounded-full border border-cream/35 flex items-start justify-center pt-[5px]">
             <div
               className="w-[5px] h-[6px] rounded-full bg-yellow"
@@ -210,7 +252,6 @@ export default function Hero() {
             />
           </div>
 
-          {/* Ligne qui pulse vers le bas */}
           <div className="w-px h-8 bg-cream/15 overflow-hidden relative">
             <div
               className="absolute inset-x-0 top-0 h-full bg-yellow/60"
