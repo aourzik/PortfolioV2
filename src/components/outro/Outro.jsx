@@ -196,6 +196,14 @@ export default function Outro() {
 
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
+        {/* ── Vignettage — assombrit les bords, encadre la scène ───────── */}
+        <div
+          className="absolute inset-0 z-[9] pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.80) 100%)',
+          }}
+        />
+
         {/* ── Fumée — blobs crème floutés, apparaissent avec le titre ─── */}
         <div
           ref={smokeRef}
